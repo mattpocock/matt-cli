@@ -1,0 +1,19 @@
+{
+  "name": "matt-cli",
+  "version": "1.0.0",
+  "bin": {
+    "matt": "./bin/index.js"
+  },
+  "license": "MIT",
+  "scripts": {
+    "prepare": "esbuild src/bin.ts --outfile=bin/index.js --bundle --platform=node --target=node14"
+  },
+  "devDependencies": {
+    "@types/node": "^16.4.0",
+    "esbuild": "^0.12.15"
+  },
+  "dependencies": {
+    "commander": "^8.0.0",
+    "prompts": "^2.4.1"
+  }
+}

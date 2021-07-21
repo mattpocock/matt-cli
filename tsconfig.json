@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "strictNullChecks": true,
+    "strict": true,
+    "noEmit": true,
+    "moduleResolution": "node"
+  },
+  "include": [
+    "src"
+  ]
+}
