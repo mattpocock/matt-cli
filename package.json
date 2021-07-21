@@ -10,9 +10,11 @@
   },
   "devDependencies": {
     "@types/node": "^16.4.0",
+    "@types/prompts": "^2.0.14",
     "esbuild": "^0.12.15"
   },
   "dependencies": {
+    "xstate": "^4.23.0",
     "commander": "^8.0.0",
     "prompts": "^2.4.1"
   }
