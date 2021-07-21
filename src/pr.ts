@@ -2,6 +2,7 @@ import { exec } from "./exec";
 import { assign, createMachine, interpret } from "xstate";
 import prompts from "prompts";
 import { execSync } from "child_process";
+import { makePromptService } from "./makePromptService";
 
 interface Context {
   issueName?: string;
@@ -107,25 +108,24 @@ const machine = createMachine<Context, Event>({
       },
     },
     checkingIfHasLinearIssueName: {
-      invoke: {
-        src: async () => {
-          const { hasLinearName } = await prompts({
-            name: "hasLinearName",
-            type: "confirm",
-            message: `Do you have a Linear issue you're working on?`,
-          });
-          return hasLinearName;
+      invoke: makePromptService(
+        {
+          name: "hasLinearName",
+          type: "confirm",
+          message: `Do you have a Linear issue you're working on?`,
         },
-        onDone: [
-          {
-            cond: (c, e) => e.data,
-            target: "gettingIssueNameAndMessage.askingForIssueName",
-          },
-          {
-            target: "gettingIssueNameAndMessage.askingForPrTitle",
-          },
-        ],
-      },
+        {
+          onDone: [
+            {
+              cond: (c, e) => Boolean(e.data.hasLinearName),
+              target: "gettingIssueNameAndMessage.askingForIssueName",
+            },
+            {
+              target: "gettingIssueNameAndMessage.askingForPrTitle",
+            },
+          ],
+        },
+      ),
     },
     gettingIssueNameAndMessage: {
       onDone: {
@@ -133,62 +133,58 @@ const machine = createMachine<Context, Event>({
       },
       states: {
         askingForIssueName: {
-          invoke: {
-            src: async () => {
-              const { linearIssueName } = await prompts({
-                name: "linearIssueName",
-                type: "text",
-                message: `Paste in your linear issue name`,
-              });
-
-              return linearIssueName;
+          invoke: makePromptService(
+            {
+              name: "linearIssueName",
+              type: "text",
+              message: `Paste in your linear issue name`,
             },
-            onDone: [
-              {
-                cond: (ctx, e) => e.data,
-                actions: assign((context, event) => {
-                  return {
-                    issueName: event.data,
-                  };
-                }),
-                target: "askingForPrTitle",
-              },
-              {
-                target: "#complete",
-              },
-            ],
-          },
+            {
+              onDone: [
+                {
+                  cond: (ctx, e) => e.data.linearIssueName,
+                  actions: assign((context, event) => {
+                    return {
+                      issueName: event.data.linearIssueName,
+                    };
+                  }),
+                  target: "askingForPrTitle",
+                },
+                {
+                  target: "#complete",
+                },
+              ],
+            },
+          ),
         },
         askingForPrTitle: {
-          invoke: {
-            src: async () => {
-              const { title } = await prompts({
-                name: "title",
-                type: "text",
-                message: `What is the title of this PR?`,
-              });
-
-              return title;
+          invoke: makePromptService(
+            {
+              name: "title",
+              type: "text",
+              message: `What is the title of this PR?`,
             },
-            onDone: [
-              {
-                cond: (ctx, e) => e.data,
-                actions: assign({
-                  prTitle: (context, event) => {
-                    return event.data;
-                  },
-                  issueName: (context, event) => {
-                    if (context.issueName) return context.issueName;
-                    return `matt/${fixBranchName(event.data)}`;
-                  },
-                }),
-                target: "gettingDataComplete",
-              },
-              {
-                target: "#complete",
-              },
-            ],
-          },
+            {
+              onDone: [
+                {
+                  cond: (ctx, e) => e.data.title,
+                  actions: assign({
+                    prTitle: (context, event) => {
+                      return event.data.title;
+                    },
+                    issueName: (context, event) => {
+                      if (context.issueName) return context.issueName;
+                      return `matt/${fixBranchName(event.data.title)}`;
+                    },
+                  }),
+                  target: "gettingDataComplete",
+                },
+                {
+                  target: "#complete",
+                },
+              ],
+            },
+          ),
         },
         gettingDataComplete: {
           type: "final",
