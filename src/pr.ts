@@ -179,7 +179,7 @@ const machine = createMachine<Context, Event>({
                   },
                   issueName: (context, event) => {
                     if (context.issueName) return context.issueName;
-                    return fixBranchName(event.data);
+                    return `matt/${fixBranchName(event.data)}`;
                   },
                 }),
                 target: "gettingDataComplete",
