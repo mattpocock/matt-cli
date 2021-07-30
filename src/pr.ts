@@ -8,6 +8,7 @@ interface Context {
   issueName?: string;
   prTitle?: string;
   currentBranch?: string;
+  isDraft: boolean;
 }
 
 type Event =
@@ -28,7 +29,9 @@ const fixBranchName = (message: string) =>
 
 const machine = createMachine<Context, Event>({
   initial: "checkingIfHasGithubCliInstalled",
-  context: {},
+  context: {
+    isDraft: false,
+  },
   states: {
     checkingIfHasGithubCliInstalled: {
       invoke: {
@@ -159,11 +162,18 @@ const machine = createMachine<Context, Event>({
         },
         askingForPrTitle: {
           invoke: makePromptService(
-            {
-              name: "title",
-              type: "text",
-              message: `What is the title of this PR?`,
-            },
+            [
+              {
+                name: "title",
+                type: "text",
+                message: `What is the title of this PR?`,
+              },
+              {
+                name: "isDraft",
+                type: "confirm",
+                message: "Is this PR a draft?",
+              },
+            ],
             {
               onDone: [
                 {
@@ -176,6 +186,7 @@ const machine = createMachine<Context, Event>({
                       if (context.issueName) return context.issueName;
                       return `matt/${fixBranchName(event.data.title)}`;
                     },
+                    isDraft: (c, e) => Boolean(e.data.isDraft),
                   }),
                   target: "gettingDataComplete",
                 },
@@ -198,7 +209,12 @@ const machine = createMachine<Context, Event>({
           exec(`git commit -m \"${ctx.prTitle}\"`);
           exec(`git push -u origin ${ctx.issueName}`);
           exec(
-            `gh pr create --title \"${ctx.prTitle}\" --base ${ctx.currentBranch}`,
+            [
+              "gh pr create",
+              `--title \"${ctx.prTitle}\"`,
+              ctx.isDraft ? "--draft" : "",
+              `--base ${ctx.currentBranch}`,
+            ].join(" "),
           );
         },
       },
