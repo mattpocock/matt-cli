@@ -9,6 +9,8 @@ interface Context {
   prTitle?: string;
   currentBranch?: string;
   isDraft: boolean;
+  loomLink?: string;
+  reviewers: string[];
 }
 
 type Event =
@@ -31,6 +33,7 @@ const machine = createMachine<Context, Event>({
   initial: "checkingIfHasGithubCliInstalled",
   context: {
     isDraft: false,
+    reviewers: [],
   },
   states: {
     checkingIfHasGithubCliInstalled: {
@@ -173,6 +176,26 @@ const machine = createMachine<Context, Event>({
                 type: "confirm",
                 message: "Is this PR a draft?",
               },
+              {
+                name: "loomLink",
+                type: "text",
+                message: "Provide a loom link for the PR:",
+              },
+              {
+                name: "reviewers",
+                type: "multiselect",
+                message: "Who do you want to review this PR?",
+                choices: [
+                  "Andarist",
+                  "davidkpiano",
+                  "farskid",
+                  "laurakalbag",
+                ].map((val) => ({
+                  title: val,
+                  value: val,
+                  selected: val !== "laurakalbag",
+                })),
+              },
             ],
             {
               onDone: [
@@ -186,7 +209,13 @@ const machine = createMachine<Context, Event>({
                       if (context.issueName) return context.issueName;
                       return `matt/${fixBranchName(event.data.title)}`;
                     },
+                    loomLink: (context, event) => {
+                      return event.data.loomLink;
+                    },
                     isDraft: (c, e) => Boolean(e.data.isDraft),
+                    reviewers: (context, event) => {
+                      return event.data.reviewers || [];
+                    },
                   }),
                   target: "gettingDataComplete",
                 },
@@ -208,13 +237,19 @@ const machine = createMachine<Context, Event>({
           exec(`git checkout -b ${ctx.issueName}`);
           exec(`git commit -m \"${ctx.prTitle}\"`);
           exec(`git push -u origin ${ctx.issueName}`);
+
           exec(
             [
               "gh pr create",
               `--title \"${ctx.prTitle}\"`,
               ctx.isDraft ? "--draft" : "",
               `--base ${ctx.currentBranch}`,
-            ].join(" "),
+              ctx.reviewers.length > 0 &&
+                `--reviewer ${ctx.reviewers.join(",")}`,
+              `--body "${ctx.loomLink || ""}"`,
+            ]
+              .filter(Boolean)
+              .join(" "),
           );
         },
       },
