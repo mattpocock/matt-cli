@@ -21,7 +21,7 @@ type Event =
       type: "UNSTAGE_CHANGE_CHECK_COMPLETE";
     };
 
-const charsToRemove = /(\.|,|'|\/)/g;
+const charsToRemove = /(\.|,|'|\/|\)|\()/g;
 
 const fixBranchName = (message: string) =>
   message

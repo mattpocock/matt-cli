@@ -1,0 +1,248 @@
+{
+  "What is a state machine": {
+    "name": "What is a state machine",
+    "description": "https://xstate.js.org/docs/guides/introduction-to-state-machines-and-statecharts/",
+    "deps": []
+  },
+  "States": {
+    "name": "States",
+    "description": "",
+    "deps": ["What is a state machine"]
+  },
+  "Final states": {
+    "name": "Final states",
+    "description": "https://xstate.js.org/docs/guides/final.html#api",
+    "deps": ["States", "Hierarchical states"]
+  },
+  "Parallel States": {
+    "name": "Parallel States",
+    "description": "https://xstate.js.org/docs/guides/parallel.html",
+    "deps": ["States", "Hierarchical states"]
+  },
+  "createMachine API": {
+    "name": "createMachine API",
+    "description": "https://xstate.js.org/docs/guides/machines.html",
+    "deps": [
+      "What is a state machine",
+      "Options intro",
+      "States",
+      "Transitions/Events",
+      "Context"
+    ]
+  },
+  "Context": {
+    "name": "Context",
+    "description": "https://xstate.js.org/docs/guides/context.html#initial-context",
+    "deps": ["What is a state machine"]
+  },
+  "Assign action": {
+    "name": "Assign action",
+    "description": "https://xstate.js.org/docs/guides/context.html#assign-action",
+    "deps": ["Context", "Actions"]
+  },
+  "Actions": {
+    "name": "Actions",
+    "description": "https://xstate.js.org/docs/guides/actions.html",
+    "deps": ["Options intro"]
+  },
+  "Options intro": {
+    "name": "Options intro",
+    "description": "https://xstate.js.org/docs/guides/effects.html",
+    "deps": ["What is a state machine", "Context", "Transitions/Events"]
+  },
+  "Send action": {
+    "name": "Send action",
+    "description": "https://xstate.js.org/docs/guides/actions.html#send-action",
+    "deps": ["Actions", "Transitions/Events"]
+  },
+  "Transitions/Events": {
+    "name": "Transitions/Events",
+    "description": "",
+    "deps": ["States", "What is a state machine"]
+  },
+  "Hierarchical states": {
+    "name": "Hierarchical states",
+    "description": "https://xstate.js.org/docs/guides/hierarchical.html#api",
+    "deps": ["States", "Initial states"]
+  },
+  "State done events": {
+    "name": "State done events",
+    "description": "",
+    "deps": ["Final states", "Hierarchical states", "Transitions/Events"]
+  },
+  "machine.withConfig": {
+    "name": "machine.withConfig",
+    "description": "",
+    "deps": ["createMachine API", "Options intro"]
+  },
+  "machine.withContext": {
+    "name": "machine.withContext",
+    "description": "",
+    "deps": ["Context", "createMachine API"]
+  },
+  "machine.transition": {
+    "name": "machine.transition",
+    "description": "createMachine API",
+    "deps": ["createMachine API", "Transitions/Events"]
+  },
+  "Running machines intro": {
+    "name": "Running machines intro",
+    "description": "",
+    "deps": ["What is a state machine", "createMachine API"]
+  },
+  "interpret API": {
+    "name": "interpret API",
+    "description": "",
+    "deps": ["createMachine API", "Running machines intro"]
+  },
+  "Guards": {
+    "name": "Guards",
+    "description": "",
+    "deps": ["Options intro", "Transitions/Events"]
+  },
+  "Services": {
+    "name": "Services",
+    "description": "",
+    "deps": ["Options intro"]
+  },
+  "useMachine": {
+    "name": "useMachine",
+    "description": "",
+    "deps": ["@xstate/react", "createMachine API", "Running machines intro"]
+  },
+  "useInterpret": {
+    "name": "useInterpret",
+    "description": "",
+    "deps": ["interpret API", "@xstate/react"]
+  },
+  "Promise services": {
+    "name": "Promise services",
+    "description": "",
+    "deps": ["Services"]
+  },
+  "Callback services": {
+    "name": "Callback services",
+    "description": "",
+    "deps": ["Services"]
+  },
+  "Observable services": {
+    "name": "Observable services",
+    "description": "",
+    "deps": ["Services"]
+  },
+  "Machine services": {
+    "name": "Machine services",
+    "description": "",
+    "deps": ["Services", "Running machines intro"]
+  },
+  "sendParent": {
+    "name": "sendParent",
+    "description": "",
+    "deps": ["Actions", "Machine services"]
+  },
+  "forwardTo": {
+    "name": "forwardTo",
+    "description": "",
+    "deps": ["Actions", "Callback services", "Machine services"]
+  },
+  "useSelector": {
+    "name": "useSelector",
+    "description": "",
+    "deps": ["useInterpret", "Intro to State API"]
+  },
+  "spawn": {
+    "name": "spawn",
+    "description": "",
+    "deps": ["Context", "Assign action", "Running machines intro"]
+  },
+  "Invoke onDone": {
+    "name": "Invoke onDone",
+    "description": "",
+    "deps": ["Promise services", "Machine services"]
+  },
+  "Invoke onError": {
+    "name": "Invoke onError",
+    "description": "",
+    "deps": ["Promise services", "Machine services"]
+  },
+  "After": {
+    "name": "After",
+    "description": "",
+    "deps": ["States", "Transitions/Events"]
+  },
+  "Dynamic after": {
+    "name": "Dynamic after",
+    "description": "",
+    "deps": ["createMachine API", "After"]
+  },
+  "@xstate/react": {
+    "name": "@xstate/react",
+    "description": "",
+    "deps": ["Running machines intro", "createMachine API"]
+  },
+  "Parallel states onDone": {
+    "name": "Parallel states onDone",
+    "description": "",
+    "deps": ["Parallel States", "State done events"]
+  },
+  "History states": {
+    "name": "History states",
+    "description": "",
+    "deps": ["States", "Transitions/Events"]
+  },
+  "State tags": {
+    "name": "State tags",
+    "description": "",
+    "deps": ["States", "createMachine API"]
+  },
+  "state.matches": {
+    "name": "state.matches",
+    "description": "",
+    "deps": ["Intro to State API", "Running machines intro"]
+  },
+  "State meta data": {
+    "name": "State meta data",
+    "description": "",
+    "deps": ["States", "createMachine API"]
+  },
+  "Always events": {
+    "name": "Always events",
+    "description": "",
+    "deps": ["Transitions/Events", "Guards"]
+  },
+  "Transitioning to nodes by id": {
+    "name": "Transitioning to nodes by id",
+    "description": "",
+    "deps": ["Hierarchical states", "Transitions/Events"]
+  },
+  "Choose action": {
+    "name": "Choose action",
+    "description": "",
+    "deps": ["Actions", "Guards"]
+  },
+  "Pure action": {
+    "name": "Pure action",
+    "description": "",
+    "deps": ["Actions"]
+  },
+  "Wildcard events": {
+    "name": "Wildcard events",
+    "description": "",
+    "deps": ["Transitions/Events"]
+  },
+  "Event listeners in hierarchical states": {
+    "name": "Event listeners in hierarchical states",
+    "description": "",
+    "deps": ["Transitions/Events", "Hierarchical states"]
+  },
+  "Intro to State API": {
+    "name": "Intro to State API",
+    "description": "",
+    "deps": ["createMachine API", "States", "Running machines intro"]
+  },
+  "Initial states": {
+    "name": "Initial states",
+    "description": "",
+    "deps": ["States"]
+  }
+}
