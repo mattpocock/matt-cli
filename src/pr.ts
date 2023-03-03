@@ -99,7 +99,7 @@ const machine = createMachine<Context, Event>({
     },
     gettingCurrentBranch: {
       always: {
-        target: "checkingIfHasLinearIssueName",
+        target: "gettingIssueNameAndMessage",
         actions: assign((context, event) => {
           const branchName = execSync(
             "echo $(git symbolic-ref --short -q HEAD)",
@@ -113,56 +113,12 @@ const machine = createMachine<Context, Event>({
         }),
       },
     },
-    checkingIfHasLinearIssueName: {
-      invoke: makePromptService(
-        {
-          name: "hasLinearName",
-          type: "confirm",
-          message: `Do you have a Linear issue you're working on?`,
-        },
-        {
-          onDone: [
-            {
-              cond: (c, e) => Boolean(e.data.hasLinearName),
-              target: "gettingIssueNameAndMessage.askingForIssueName",
-            },
-            {
-              target: "gettingIssueNameAndMessage.askingForPrTitle",
-            },
-          ],
-        },
-      ),
-    },
     gettingIssueNameAndMessage: {
       onDone: {
         target: "creatingAndPushingBranch",
       },
+      initial: "askingForPrTitle",
       states: {
-        askingForIssueName: {
-          invoke: makePromptService(
-            {
-              name: "linearIssueName",
-              type: "text",
-              message: `Paste in your linear issue name`,
-            },
-            {
-              onDone: [
-                {
-                  cond: (ctx, e) => e.data.linearIssueName,
-                  actions: assign((context, event) => {
-                    return {
-                      issueName: event.data.linearIssueName,
-                    };
-                  }),
-                  target: "askingForPrTitle",
-                },
-                {
-                  target: "#complete",
-                },
-              ],
-            },
-          ),
-        },
         askingForPrTitle: {
           invoke: makePromptService(
             [
@@ -181,21 +137,6 @@ const machine = createMachine<Context, Event>({
                 type: "text",
                 message: "Provide a loom link for the PR:",
               },
-              {
-                name: "reviewers",
-                type: "multiselect",
-                message: "Who do you want to review this PR?",
-                choices: [
-                  "Andarist",
-                  "davidkpiano",
-                  "farskid",
-                  "laurakalbag",
-                ].map((val) => ({
-                  title: val,
-                  value: val,
-                  selected: val !== "laurakalbag",
-                })),
-              },
             ],
             {
               onDone: [
@@ -206,16 +147,12 @@ const machine = createMachine<Context, Event>({
                       return event.data.title;
                     },
                     issueName: (context, event) => {
-                      if (context.issueName) return context.issueName;
                       return `matt/${fixBranchName(event.data.title)}`;
                     },
                     loomLink: (context, event) => {
                       return event.data.loomLink;
                     },
                     isDraft: (c, e) => Boolean(e.data.isDraft),
-                    reviewers: (context, event) => {
-                      return event.data.reviewers || [];
-                    },
                   }),
                   target: "gettingDataComplete",
                 },
@@ -244,8 +181,8 @@ const machine = createMachine<Context, Event>({
               `--title \"${ctx.prTitle}\"`,
               ctx.isDraft ? "--draft" : "",
               `--base ${ctx.currentBranch}`,
-              ctx.reviewers.length > 0 &&
-                `--reviewer ${ctx.reviewers.join(",")}`,
+              // ctx.reviewers.length > 0 &&
+              //   `--reviewer ${ctx.reviewers.join(",")}`,
               `--body "${ctx.loomLink || ""}"`,
             ]
               .filter(Boolean)

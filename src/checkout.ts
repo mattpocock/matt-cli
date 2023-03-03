@@ -9,6 +9,6 @@ export const checkout = (branch: string) => {
   // Pull branch
   exec(`git pull`);
 
-  // Run yarn install
-  exec(`yarn install`);
+  // // Run yarn install
+  // exec(`yarn install`);
 };

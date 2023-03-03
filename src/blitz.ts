@@ -12,6 +12,16 @@ const tasks: Task[] = [
     name: "Kitchen - Empty recycle bin",
   },
   {
+    name: "Upstairs - Hoover",
+    defaultDone: true,
+  },
+  {
+    name: "Study - Clean desk",
+  },
+  {
+    name: "Stairs - Hoover",
+  },
+  {
     name: "Kitchen - Empty main bin",
   },
   {
@@ -46,7 +56,18 @@ const tasks: Task[] = [
     defaultDone: true,
   },
   {
+    name: "Kitchen - Mop floor",
+    defaultDone: true,
+  },
+  {
+    name: "Kitchen - Clean window",
+    defaultDone: true,
+  },
+  {
     name: "Bathroom - Shave face",
+  },
+  {
+    name: "Bathroom - Shower",
   },
   {
     name: "Bathroom - Cut nails",
@@ -55,6 +76,9 @@ const tasks: Task[] = [
   {
     name: "Outside - Put bins into street (Wednesdays)",
     defaultDone: true,
+  },
+  {
+    name: "Outside - Go for a run (M-W-F)",
   },
   {
     name: "Living Room - Hoover downstairs",

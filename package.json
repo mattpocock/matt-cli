@@ -6,7 +6,7 @@
   },
   "license": "MIT",
   "scripts": {
-    "prepare": "esbuild src/bin.ts --outfile=bin/index.js --bundle --platform=node --target=node14"
+    "prepare": "esbuild src/bin.ts --outfile=bin/index.js --bundle --platform=node --external:cfonts --target=node14"
   },
   "devDependencies": {
     "@types/node": "^16.4.0",
@@ -14,8 +14,10 @@
     "esbuild": "^0.12.15"
   },
   "dependencies": {
+    "cfonts": "^3.1.1",
     "colors": "^1.4.0",
     "commander": "^8.0.0",
+    "fast-glob": "^3.2.12",
     "open": "^8.4.0",
     "prompts": "^2.4.1",
     "xstate": "^4.23.0"
