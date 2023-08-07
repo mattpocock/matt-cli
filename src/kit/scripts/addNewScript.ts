@@ -7,6 +7,7 @@ const COMPONENTS = {
   scriptFile: (opts: { filename: string; title: string }) => {
     return [
       `const run = async () => {};`,
+      ``,
       `export const ${opts.filename}Info = {`,
       `  run,`,
       `  title: '${opts.title}'`,
