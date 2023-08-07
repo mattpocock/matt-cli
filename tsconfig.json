@@ -1,12 +1,20 @@
 {
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Node 16",
+  "_version": "16.1.0",
   "compilerOptions": {
-    "strictNullChecks": true,
+    "lib": [
+      "es2021"
+    ],
+    "module": "Node16",
+    "target": "es2021",
     "strict": true,
-    "noEmit": true,
-    "moduleResolution": "node",
-    "allowSyntheticDefaultImports": true
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node16"
   },
   "include": [
-    "src"
+    "src/**/*"
   ]
 }

@@ -6,64 +6,117 @@ import fg from "fast-glob";
  * Reorders all 01-*.problem.ts and 01-*.solution*.ts files in the directory
  */
 
-const parsePath = (p: string) => {
-  const pathBase = path.parse(p).base;
+const parsePath = (relativePath: string) => {
+  const parsedPath = path.parse(relativePath);
 
-  const isProblem = pathBase.includes("problem");
-  const isSolution = pathBase.includes("solution");
+  const dir = parsedPath.dir;
 
-  const isValid = isProblem || isSolution;
+  const pathName = parsedPath.base;
+
+  const isProblem = pathName.includes("problem");
+  const isSolution = pathName.includes("solution");
+  const isExplainer = pathName.includes("explainer");
+
+  const isValid = isProblem || isSolution || isExplainer;
   return {
     isValid,
+    dir,
+    isExplainer,
     isProblem,
-    num: pathBase.split("-")[0],
+    hasDir: Boolean(dir),
+    dirNum: dir.split("-")[0],
+    num: pathName.split("-")[0],
   };
 };
 
-export const reorder = (filePath: string) => {
-  const currentMap: Record<
+export const reorder = (basePath: string) => {
+  const paths = fg.sync(path.join(basePath, "**/**.{ts,tsx}")).map((p) => {
+    return path.relative(basePath, p);
+  });
+
+  const { changes } = getPathsToChange(paths);
+
+  changes.forEach(({ from, to, newNum, prevNum }) => {
+    console.log(`Renaming ${prevNum} to ${newNum}`);
+    exec(`mv ${path.resolve(basePath, from)} ${path.resolve(basePath, to)}`);
+  });
+};
+
+type ChangeInstruction = {
+  from: string;
+  to: string;
+  prevNum: string;
+  newNum: string;
+};
+
+export const getPathsToChange = (
+  inputPaths: string[],
+): {
+  changes: ChangeInstruction[];
+  newPaths: string[];
+} => {
+  const dirMap: Record<
     string,
-    {
-      paths: string[];
-    }
+    Record<
+      string,
+      {
+        paths: string[];
+      }
+    >
   > = {};
 
-  fg.sync(path.join(filePath, "**/**.{ts,tsx}")).forEach((p) => {
-    const { isValid, isProblem, num } = parsePath(p);
+  inputPaths.forEach((p) => {
+    const { isValid, num, dir } = parsePath(p);
 
     if (!isValid) {
       return;
     }
 
-    if (!currentMap[num]) {
-      currentMap[num] = {
-        paths: [],
-      };
-    }
+    dirMap[dir] ??= {};
+    dirMap[dir][num] ??= { paths: [] };
 
-    currentMap[num].paths.push(p);
+    dirMap[dir][num].paths.push(p);
   });
 
-  const newOrder = Object.keys(currentMap).sort(
-    (a, b) => parseFloat(a) - parseFloat(b),
-  );
+  const changes: ChangeInstruction[] = [];
+  const newPaths: string[] = [];
 
-  newOrder.map((previousNum, index) => {
-    const newNum = index + 1;
-    const newNumStr = String(newNum).padStart(2, "0");
+  let index = 0;
 
-    const { paths } = currentMap[previousNum];
+  Object.entries(dirMap)
+    .sort(([aDir], [bDir]) => {
+      return aDir.localeCompare(bDir);
+    })
+    .forEach(([dir, exerciseMap]) => {
+      const newExerciseOrder = Object.keys(exerciseMap).sort(
+        (a, b) => parseFloat(a) - parseFloat(b),
+      );
 
-    paths.forEach((p) => {
-      const { dir, base } = path.parse(p);
-      const newName = base.split("-").slice(1).join("-");
-      const newBase = `${newNumStr}-${newName}`;
-      const newPath = path.join(dir, newBase);
+      newExerciseOrder.map((previousNum) => {
+        index += 1;
+        const newNumStr = String(index).padStart(2, "0");
 
-      if (base !== newBase) {
-        console.log(`Renaming ${previousNum} to ${newNumStr}`);
-        exec(`mv ${p} ${newPath}`);
-      }
+        const { paths } = exerciseMap[previousNum];
+
+        paths.forEach((p) => {
+          const { dir, base } = path.parse(p);
+          const newName = base.split("-").slice(1).join("-");
+          const newBase = `${newNumStr}-${newName}`;
+          const newPath = path.join(dir, newBase);
+
+          newPaths.push(newPath);
+
+          if (base !== newBase) {
+            changes.push({
+              from: p,
+              to: newPath,
+              prevNum: previousNum,
+              newNum: newNumStr,
+            });
+          }
+        });
+      });
     });
-  });
+
+  return { changes, newPaths: newPaths.sort((a, b) => a.localeCompare(b)) };
 };

@@ -21,13 +21,11 @@ type Event =
       type: "UNSTAGE_CHANGE_CHECK_COMPLETE";
     };
 
-const charsToRemove = /(\.|,|'|\/|\)|\()/g;
-
-const fixBranchName = (message: string) =>
-  message
-    .split(" ")
-    .map((word) => word.toLowerCase().replace(charsToRemove, ""))
-    .join("-");
+function fixBranchName(branchName: string): string {
+  const regex = /[^a-zA-Z0-9._-]/g; // Match any character that is NOT alphanumeric, period, underscore, or hyphen
+  const cleanedName = branchName.replace(regex, "-"); // Replace any non-matching characters with a hyphen
+  return cleanedName.toLowerCase();
+}
 
 const machine = createMachine<Context, Event>({
   initial: "checkingIfHasGithubCliInstalled",

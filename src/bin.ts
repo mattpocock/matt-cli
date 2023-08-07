@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+import "zx/globals";
+
 import * as cfonts from "cfonts";
 import { Command } from "commander";
 import { blitz } from "./blitz";
@@ -14,10 +16,14 @@ import { init } from "./init";
 import { main } from "./main";
 import { reorder } from "./reorder";
 import { shuffle } from "./shuffle";
+import { kitMain } from "./kit/main";
+$.verbose = false;
 
 const program = new Command();
 
 program.version("0.0.1");
+
+program.action(kitMain);
 
 program.command("pr").action(pr);
 
