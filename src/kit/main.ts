@@ -1,3 +1,4 @@
+import { select_latest_davinci_resolve_exportInfo } from './scripts/select_latest_davinci_resolve_export';
 import prompts, { prompt } from "prompts";
 import { trimLatestOBSVideoInfo } from "./scripts/trimLatestOBSVideo";
 import { toggleVSCodeSettingsInfo } from "./scripts/toggleVSCodeSettings";
@@ -7,6 +8,7 @@ import { selectLatestOBSVideoInfo } from "./scripts/selectLatestOBSVideo";
 import { addNewScriptInfo } from "./scripts/addNewScript";
 
 const scripts = {
+  select_latest_davinci_resolve_exportInfo,
   addNewScriptInfo,
   trimLatestOBSVideoInfo,
   toggleVSCodeSettingsInfo,

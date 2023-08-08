@@ -48,8 +48,10 @@ const trimLatestOBSVideo = async () => {
   console.log("Finding silence...");
 
   $.verbose = false;
-  const output =
-    await $`ffmpeg -hide_banner -vn -i ${inputVideo} -af "silencedetect=n=${THRESH}dB:d=${DURATION}" -f null - 2>&1 | grep "silence_end" | awk '{print $5 " " $8}'`;
+  const output = await spinner(
+    () =>
+      $`ffmpeg -hide_banner -vn -i ${inputVideo} -af "silencedetect=n=${THRESH}dB:d=${DURATION}" -f null - 2>&1 | grep "silence_end" | awk '{print $5 " " $8}'`,
+  );
 
   let silence = output.stdout
     .trim()
@@ -101,27 +103,47 @@ const trimLatestOBSVideo = async () => {
   const outputVideo = path.resolve(outputFolder, outputFilename);
 
   await ensureDir(path.resolve(outputFolder, "tests"));
-  const testOutputVideo = path.resolve(outputFolder, "tests", outputFilename);
 
   console.log("Trimming video...");
 
-  await $`ffmpeg -y -hide_banner -ss ${formatFloatForFFmpeg(
-    startTime,
-  )} -to ${formatFloatForFFmpeg(
-    endTime,
-  )} -i ${inputVideo} -c copy ${outputVideo}`;
+  await spinner(
+    () =>
+      $`ffmpeg -y -hide_banner -ss ${formatFloatForFFmpeg(
+        startTime,
+      )} -to ${formatFloatForFFmpeg(
+        endTime,
+      )} -i ${inputVideo} -c copy ${outputVideo}`,
+  );
 
   console.log("Trimming test video...");
 
-  await $`ffmpeg -y -i ${outputVideo} \
-  -vf "select='between(t,0,2)+between(t,${(totalDuration - 2).toFixed(
-    1,
-  )},${totalDuration.toFixed(1)})',
-      setpts=N/FRAME_RATE/TB" \
-  -af "aselect='between(t,0,2)+between(t,${(totalDuration - 2).toFixed(
-    1,
-  )},${totalDuration.toFixed(1)})',
-      asetpts=N/SR/TB" ${testOutputVideo}`;
+  const testOutputVideo = path.resolve(outputFolder, "tests", outputFilename);
+  const testOutputVideoFirst = path.resolve(
+    outputFolder,
+    "tests",
+    `tmp-start.mp4`,
+  );
+  const testOutputVideoLast = path.resolve(
+    outputFolder,
+    "tests",
+    `tmp-end.mp4`,
+  );
+
+  await spinner(
+    () => $`ffmpeg -y -i ${outputVideo} -ss 0 -to 2 ${testOutputVideoFirst}`,
+  );
+
+  await spinner(
+    () =>
+      $`ffmpeg -y -i ${outputVideo} -ss ${formatFloatForFFmpeg(
+        totalDuration - 2,
+      )} -to ${formatFloatForFFmpeg(totalDuration)} ${testOutputVideoLast}`,
+  );
+
+  await spinner(
+    () =>
+      $`ffmpeg -y concat -safe 0 -i ${testOutputVideoFirst} -i ${testOutputVideoLast} -c copy ${testOutputVideo}`,
+  );
 
   await $`open ${testOutputVideo}`;
 };
