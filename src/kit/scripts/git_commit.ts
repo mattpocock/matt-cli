@@ -1,6 +1,5 @@
 const run = async () => {
-  // current date in YYYY-MM-DD format
-  const currentDate = new Date().toISOString().split("T")[0];
+  const currentDate = new Date().toISOString();
 
   $.verbose = true;
 
