@@ -1,6 +1,6 @@
 import { readFile, writeFile } from "fs/promises";
 
-const SITES_TO_BLOCK = ["twitter.com", "youtube.com"];
+const SITES_TO_BLOCK = ["twitter.com", "youtube.com", "whatsapp.com"];
 
 const LINES_TO_DELETE = SITES_TO_BLOCK.flatMap((site) => {
   return [`127.0.0.1 ${site}`, `127.0.0.1 www.${site}`];
