@@ -1,3 +1,5 @@
+import { git_commitInfo } from './scripts/git_commit';
+import { add_item_to_written_contentInfo } from './scripts/add_item_to_written_content';
 import { select_latest_davinci_resolve_exportInfo } from './scripts/select_latest_davinci_resolve_export';
 import prompts, { prompt } from "prompts";
 import { trimLatestOBSVideoInfo } from "./scripts/trimLatestOBSVideo";
@@ -8,6 +10,8 @@ import { selectLatestOBSVideoInfo } from "./scripts/selectLatestOBSVideo";
 import { addNewScriptInfo } from "./scripts/addNewScript";
 
 const scripts = {
+  git_commitInfo,
+  add_item_to_written_contentInfo,
   select_latest_davinci_resolve_exportInfo,
   addNewScriptInfo,
   trimLatestOBSVideoInfo,
