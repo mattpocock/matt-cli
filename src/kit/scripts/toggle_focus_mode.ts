@@ -1,9 +1,18 @@
 import { readFile, writeFile } from "fs/promises";
 
-const SITES_TO_BLOCK = ["twitter.com", "youtube.com", "whatsapp.com"];
+const SITES_TO_BLOCK = [
+  "twitter.com",
+  "www.twitter.com",
+  "youtube.com",
+  "studio.youtube.com",
+  "whatsapp.com",
+  "web.whatsapp.com",
+  "gmail.com",
+  "app.convertkit.com",
+];
 
-const LINES_TO_DELETE = SITES_TO_BLOCK.flatMap((site) => {
-  return [`127.0.0.1 ${site}`, `127.0.0.1 www.${site}`];
+const LINES_TO_DELETE = SITES_TO_BLOCK.map((site) => {
+  return `127.0.0.1 ${site}`;
 });
 
 const run = async () => {
@@ -30,9 +39,12 @@ const run = async () => {
     newLines.push(...LINES_TO_DELETE);
   }
 
-  console.log(isInFocusMode ? "Focus mode disabled!" : "Focus mode enabled!");
-
-  await writeFile(LOCATION, newLines.join("\n"));
+  try {
+    await writeFile(LOCATION, newLines.join("\n"));
+    console.log(isInFocusMode ? "Focus mode disabled!" : "Focus mode enabled!");
+  } catch (e) {
+    console.log("Error writing to file. Try running again with sudo.");
+  }
 };
 
 export const toggle_focus_modeInfo = {
