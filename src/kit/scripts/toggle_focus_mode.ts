@@ -9,6 +9,8 @@ const SITES_TO_BLOCK = [
   "web.whatsapp.com",
   "gmail.com",
   "app.convertkit.com",
+  "slack.com",
+  "discord.com",
 ];
 
 const LINES_TO_DELETE = SITES_TO_BLOCK.map((site) => {
