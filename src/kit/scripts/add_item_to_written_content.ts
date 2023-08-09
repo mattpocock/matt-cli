@@ -1,10 +1,7 @@
 import { readdir } from "fs/promises";
 import { home } from "../utils/home";
 import { arg, choose } from "../utils/arg";
-
-const toDashCase = (str: string) => {
-  return str.trim().split(" ").join("-").toLowerCase();
-};
+import _ from "lodash";
 
 const run = async () => {
   const writtenContentDir = home("repos", "ts", "written-content");
@@ -18,13 +15,13 @@ const run = async () => {
   const dir = await choose({
     choices: dirs,
     message: "Which dir?",
-  }).then(toDashCase);
+  }).then(_.kebabCase);
 
   const absoluteDir = path.join(writtenContentDir, dir);
 
   const newFileName = await arg({
     message: "Name of the new dir?",
-  }).then(toDashCase);
+  }).then(_.kebabCase);
 
   await $`cp -r ${path.join(absoluteDir, "_base")} ${path.join(
     absoluteDir,
