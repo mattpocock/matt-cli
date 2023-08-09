@@ -4,7 +4,12 @@ const run = async () => {
 
   $.verbose = true;
 
-  await $`git add -A && git commit -m "${currentDate}" && git push`;
+  await spinner(
+    "Committing...",
+    () => $`git add -A && git commit -m "${currentDate}" && git push`,
+  );
+
+  console.log("Auto commit complete!");
 };
 
 export const git_commitInfo = {
