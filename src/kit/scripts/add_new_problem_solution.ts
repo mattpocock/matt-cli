@@ -2,6 +2,9 @@ import { readdir, writeFile } from "fs/promises";
 import { arg } from "../utils/arg";
 import { getActiveEditorFilePath } from "../utils/getActiveEditorFilePath";
 import _ from "lodash";
+import { EXERCISE_NUMBER_LENGTH } from "../../constants";
+
+const defaultExerciseNumber = "0".padStart(EXERCISE_NUMBER_LENGTH, "0");
 
 const run = async () => {
   const name = await arg({
@@ -13,22 +16,26 @@ const run = async () => {
   const currentDir = path.dirname(currentFile);
 
   const defaultNum = await (async () => {
-    const filesInDir = await readdir(currentDir);
+    const filesInDir = await readdir(currentDir).then((files) => {
+      return files.filter((file) => {
+        return file.endsWith(".ts") || file.endsWith(".tsx");
+      });
+    });
 
     const lastFileInDir = _.last(filesInDir);
 
     if (!lastFileInDir) {
-      return "00";
+      return defaultExerciseNumber;
     }
     const startOfLastFileInDir = lastFileInDir.split("-")[0];
 
     const num = Math.ceil(Number(startOfLastFileInDir));
 
     if (isNaN(num)) {
-      return "00";
+      return defaultExerciseNumber;
     }
 
-    return `${num + 1}`.padStart(2, "0");
+    return `${num + 1}`.padStart(EXERCISE_NUMBER_LENGTH, "0");
   })();
 
   const num = await arg({
@@ -44,8 +51,6 @@ const run = async () => {
 
   await writeFile(problemFile, "");
   await writeFile(solutionFile, "");
-
-  await $`code ${solutionFile}`;
 };
 
 export const add_new_problem_solutionInfo = {
