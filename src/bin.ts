@@ -17,6 +17,7 @@ import { main } from "./main";
 import { reorder } from "./reorder";
 import { shuffle } from "./shuffle";
 import { kitMain } from "./kit/main";
+
 $.verbose = false;
 
 const program = new Command();

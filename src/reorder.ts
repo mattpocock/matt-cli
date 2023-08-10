@@ -1,6 +1,7 @@
 import { exec } from "./exec";
 import * as path from "path";
 import fg from "fast-glob";
+import { EXERCISE_NUMBER_LENGTH } from "./constants";
 
 /**
  * Reorders all 01-*.problem.ts and 01-*.solution*.ts files in the directory
@@ -94,7 +95,7 @@ export const getPathsToChange = (
 
       newExerciseOrder.map((previousNum) => {
         index += 1;
-        const newNumStr = String(index).padStart(2, "0");
+        const newNumStr = String(index).padStart(EXERCISE_NUMBER_LENGTH, "0");
 
         const { paths } = exerciseMap[previousNum];
 
