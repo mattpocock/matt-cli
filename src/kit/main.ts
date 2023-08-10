@@ -1,3 +1,4 @@
+import { download_youtube_videoInfo } from './scripts/download_youtube_video';
 import { add_new_problem_solutionInfo } from './scripts/add_new_problem_solution';
 import { toggle_focus_modeInfo } from './scripts/toggle_focus_mode';
 import { new_repoInfo } from './scripts/new_repo';
@@ -13,6 +14,7 @@ import { selectLatestOBSVideoInfo } from "./scripts/selectLatestOBSVideo";
 import { addNewScriptInfo } from "./scripts/addNewScript";
 
 const scripts = {
+  download_youtube_videoInfo,
   add_new_problem_solutionInfo,
   toggle_focus_modeInfo,
   new_repoInfo,
