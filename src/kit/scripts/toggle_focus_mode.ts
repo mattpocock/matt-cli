@@ -3,6 +3,10 @@ import { readFile, writeFile } from "fs/promises";
 const SITES_TO_BLOCK = [
   "twitter.com",
   "www.twitter.com",
+  "api.twitter.com",
+  "x.com",
+  "www.x.com",
+  "api.x.com",
   "youtube.com",
   "www.youtube.com",
   "studio.youtube.com",
