@@ -31,9 +31,16 @@ const parsePath = (relativePath: string) => {
 };
 
 export const reorder = (basePath: string) => {
-  const paths = fg.sync(path.join(basePath, "**/**.{ts,tsx}")).map((p) => {
-    return path.relative(basePath, p);
-  });
+  const paths = fg
+    .sync(
+      "**/[0123456789][0123456789][0123456789]*{problem,solution,explainer}*",
+      {
+        onlyFiles: false,
+      },
+    )
+    .map((p) => {
+      return path.relative(basePath, p);
+    });
 
   const { changes } = getPathsToChange(paths);
 
