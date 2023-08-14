@@ -28,11 +28,11 @@ const run = async () => {
     newFileName,
   )}`;
 
-  await arg({
-    message: "Press enter to open the new file in VSCode",
+  const notes = await arg({
+    message: "Copy and paste your notes here:",
   });
 
-  await $`code ${path.join(absoluteDir, newFileName, "checklist.md")}`;
+  await $`echo ${notes} > ${path.join(absoluteDir, newFileName, "notes.md")}`;
 };
 
 export const add_item_to_written_contentInfo = {
