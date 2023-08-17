@@ -1,3 +1,4 @@
+import { code_samples_from_markdown_fileInfo } from './scripts/code_samples_from_markdown_file';
 import { download_youtube_videoInfo } from './scripts/download_youtube_video';
 import { add_new_problem_solutionInfo } from './scripts/add_new_problem_solution';
 import { toggle_focus_modeInfo } from './scripts/toggle_focus_mode';
@@ -14,6 +15,7 @@ import { selectLatestOBSVideoInfo } from "./scripts/selectLatestOBSVideo";
 import { addNewScriptInfo } from "./scripts/addNewScript";
 
 const scripts = {
+  code_samples_from_markdown_fileInfo,
   download_youtube_videoInfo,
   add_new_problem_solutionInfo,
   toggle_focus_modeInfo,

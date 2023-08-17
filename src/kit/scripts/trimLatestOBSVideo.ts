@@ -118,31 +118,18 @@ const trimLatestOBSVideo = async () => {
   console.log("Trimming test video...");
 
   const testOutputVideo = path.resolve(outputFolder, "tests", outputFilename);
-  const testOutputVideoFirst = path.resolve(
-    outputFolder,
-    "tests",
-    `tmp-start.mp4`,
-  );
-  const testOutputVideoLast = path.resolve(
-    outputFolder,
-    "tests",
-    `tmp-end.mp4`,
-  );
-
-  await spinner(
-    () => $`ffmpeg -y -i ${outputVideo} -ss 0 -to 2 ${testOutputVideoFirst}`,
-  );
 
   await spinner(
     () =>
-      $`ffmpeg -y -i ${outputVideo} -ss ${formatFloatForFFmpeg(
-        totalDuration - 2,
-      )} -to ${formatFloatForFFmpeg(totalDuration)} ${testOutputVideoLast}`,
-  );
-
-  await spinner(
-    () =>
-      $`ffmpeg -y concat -safe 0 -i ${testOutputVideoFirst} -i ${testOutputVideoLast} -c copy ${testOutputVideo}`,
+      $`ffmpeg -y -i ${outputVideo} \
+    -vf "select='between(t,0,2)+between(t,${(totalDuration - 2).toFixed(
+      1,
+    )},${totalDuration.toFixed(1)})',
+        setpts=N/FRAME_RATE/TB" \
+    -af "aselect='between(t,0,2)+between(t,${(totalDuration - 2).toFixed(
+      1,
+    )},${totalDuration.toFixed(1)})',
+        asetpts=N/SR/TB" ${testOutputVideo}`,
   );
 
   await $`open ${testOutputVideo}`;

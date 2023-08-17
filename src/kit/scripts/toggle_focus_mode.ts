@@ -7,6 +7,7 @@ const SITES_TO_BLOCK = [
   "x.com",
   "www.x.com",
   "api.x.com",
+  "search.google.com",
   "youtube.com",
   "www.youtube.com",
   "studio.youtube.com",
