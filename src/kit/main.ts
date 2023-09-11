@@ -1,3 +1,5 @@
+import { get_next_exerciseInfo } from './scripts/get_next_exercise';
+import { get_book_statusInfo } from './scripts/get_book_status';
 import { code_samples_from_markdown_fileInfo } from './scripts/code_samples_from_markdown_file';
 import { download_youtube_videoInfo } from './scripts/download_youtube_video';
 import { add_new_problem_solutionInfo } from './scripts/add_new_problem_solution';
@@ -15,6 +17,8 @@ import { selectLatestOBSVideoInfo } from "./scripts/selectLatestOBSVideo";
 import { addNewScriptInfo } from "./scripts/addNewScript";
 
 const scripts = {
+  get_next_exerciseInfo,
+  get_book_statusInfo,
   code_samples_from_markdown_fileInfo,
   download_youtube_videoInfo,
   add_new_problem_solutionInfo,
